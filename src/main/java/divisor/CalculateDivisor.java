@@ -28,8 +28,9 @@ public class CalculateDivisor {
     private long von;
     private long bis;
     private int threads;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(threads);
     private Collection<Callable<DivisorResult>> tasks = new ArrayList<>();
-    final ExecutorService executorService = Executors.newFixedThreadPool(threads);
+    private List<Future<DivisorResult>> futures = executorService.invokeAll(tasks);
 
     /**
      * @param von
@@ -48,17 +49,21 @@ public class CalculateDivisor {
     }
 
     private void tasksInitialisieren() {
-	
+
 	long grösseZahlenfolge = bis - von;
 	long grösseTeilZahlenfolge = grösseZahlenfolge / threads;
 	long vonTeil = von;
-	long bisTeil = vonTeil + grösseZahlenfolge;
-	
+	long bisTeil = vonTeil + grösseTeilZahlenfolge;
+
 	for (int i = 0; i < threads; i++) {
-	    
-	    vonTeil = 0;
-	    bisTeil = 0;
-	    tasks.add(new PrimzahlTask(von, bis));
+
+	    tasks.add(new PrimzahlTask(vonTeil, bisTeil));
+
+	    vonTeil = bisTeil + 1;
+	    bisTeil = vonTeil + grösseTeilZahlenfolge;
+	    if (bisTeil > this.bis) {
+		bisTeil = this.bis;
+	    }
 	}
 
     }
@@ -73,7 +78,7 @@ public class CalculateDivisor {
 	int threads = Integer.parseInt(args[2]);
 
 	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
-	// System.out.println("Ergebnis: " + cp.calculate());
+	System.out.println("Ergebnis: " + cd.calculate());
     }
 
     /**
@@ -83,12 +88,35 @@ public class CalculateDivisor {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    DivisorResult calculate() throws InterruptedException, ExecutionException {
+    private String calculate() throws InterruptedException, ExecutionException {
 
 	// Wie bei accessResults S.609 Future gibt WLösung zurück
-	// TODO implementieren Sie hier die Logic der calculate Methode
 
-	return new DivisorResult();
+	ArrayList<DivisorResult> ergebnis = new ArrayList();
+
+	try {
+
+	    for (int i = 0; i < this.futures.size(); i++) {
+
+		System.out.println(futures.get(i).isDone());
+		ergebnis.add(futures.get(i).get());
+	    }
+
+	}
+
+	catch (InterruptedException e) {
+
+	} catch (ExecutionException e) {
+
+	}
+
+	String primzahlen = null;
+	for (int i = 0; i < ergebnis.size(); i++) {
+	    primzahlen = ergebnis.get(i).toString();
+
+	}
+
+	return primzahlen;
     }
 
     public final class PrimzahlTask implements Callable<DivisorResult> {
