@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.list.SynchronizedList;
 
@@ -28,9 +29,9 @@ public class CalculateDivisor {
     private long von;
     private long bis;
     private int threads;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(threads);
     private Collection<Callable<DivisorResult>> tasks = new ArrayList<>();
-    private List<Future<DivisorResult>> futures; // = executorService.invokeAll(tasks) throws InterruptedException;
+    private ExecutorService executorService = Executors.newFixedThreadPool(threads);
+    private List<Future<DivisorResult>> futures; // = executorService.invokeAll(tasks);
 
     /**
      * @param von
@@ -48,7 +49,7 @@ public class CalculateDivisor {
 	try {
 	    futures = executorService.invokeAll(tasks);
 	} catch (InterruptedException e) {
-	    //
+	    System.out.println("Fehler1");
 	}
 
     }
@@ -78,12 +79,27 @@ public class CalculateDivisor {
 	    System.out.println("Usage: CalculateDivisor <intervalStart> <intervalEnd> <threadCount>");
 	    System.exit(1);
 	}
+	
+	
 	long von = Long.parseLong(args[0]);
 	long bis = Long.parseLong(args[1]);
 	int threads = Integer.parseInt(args[2]);
 
+	if (von > bis) {
+	    System.out.println("Die zweite Zahl muss groesser sein als die Erste");
+	    System.exit(1);
+	}
+	
+	if (von <= 0 || bis <= 0 || threads <= 0) {
+	    System.out.println("Die Zahlen muessen positiv sein");
+	    System.exit(1);
+	}
+	
+	
 	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
 	System.out.println("Ergebnis: " + cd.calculate());
+	
+//	TimeUnit.SECONDS.sleep(5);
 	cd.shutdown();
 
     }
@@ -117,13 +133,13 @@ public class CalculateDivisor {
 	    //
 	}
 
-	String primzahlen = null;
+	String primzahlenString = null;
 	for (int i = 0; i < ergebnis.size(); i++) {
-	    primzahlen = ergebnis.get(i).toString();
+	    primzahlenString += ergebnis.get(i).toString();
 
 	}
 
-	return primzahlen;
+	return primzahlenString;
     }
 
     private void shutdown() {
@@ -175,9 +191,8 @@ public class CalculateDivisor {
  */
 class DivisorResult {
     // das eigentlich ergebnis - die Ermittelten Primzahlen
-    private final List<Long> primzahlenListe = new ArrayList();
+    private final List<Long> primzahlenListe = new ArrayList<>();
 
-    // Anzahl der Divisoren von Result
 
     public DivisorResult() {
 
