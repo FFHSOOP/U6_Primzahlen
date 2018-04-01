@@ -30,7 +30,7 @@ public class CalculateDivisor {
     private int threads;
     private final ExecutorService executorService = Executors.newFixedThreadPool(threads);
     private Collection<Callable<DivisorResult>> tasks = new ArrayList<>();
-    private List<Future<DivisorResult>> futures = executorService.invokeAll(tasks);
+    private List<Future<DivisorResult>> futures; // = executorService.invokeAll(tasks) throws InterruptedException;
 
     /**
      * @param von
@@ -45,6 +45,11 @@ public class CalculateDivisor {
 	this.bis = bis;
 	this.threads = threads;
 	tasksInitialisieren();
+	try {
+	    futures = executorService.invokeAll(tasks);
+	} catch (InterruptedException e) {
+	    //
+	}
 
     }
 
@@ -79,6 +84,8 @@ public class CalculateDivisor {
 
 	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
 	System.out.println("Ergebnis: " + cd.calculate());
+	cd.shutdown();
+
     }
 
     /**
@@ -105,9 +112,9 @@ public class CalculateDivisor {
 	}
 
 	catch (InterruptedException e) {
-
+	    //
 	} catch (ExecutionException e) {
-
+	    //
 	}
 
 	String primzahlen = null;
@@ -117,6 +124,11 @@ public class CalculateDivisor {
 	}
 
 	return primzahlen;
+    }
+
+    private void shutdown() {
+
+	executorService.shutdown();
     }
 
     public final class PrimzahlTask implements Callable<DivisorResult> {
