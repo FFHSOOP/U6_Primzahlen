@@ -135,7 +135,7 @@ public class CalculateDivisor {
 	    //
 	}
 
-	String primzahlenString = "Ergebnis: " + "\n";
+	String primzahlenString = "Ergebnis: Die Primzahlen im Intervall von " + von + " bis " + bis + " lauten"+ "\n";
 	for (int i = 0; i < ergebnis.size(); i++) {
 	    primzahlenString += ergebnis.get(i).toString() + "\n";
 
@@ -218,7 +218,7 @@ class DivisorResult {
 
     @Override
     public String toString() {
-	return "Die Primzahlen von Task " + taskID + " lauten: " + primzahlenListe;
+	return "Primzahlen von Task " + taskID + " " + primzahlenListe;
     }
 
 }
