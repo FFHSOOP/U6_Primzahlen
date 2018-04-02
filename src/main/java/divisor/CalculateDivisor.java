@@ -32,6 +32,7 @@ public class CalculateDivisor {
     private Collection<Callable<DivisorResult>> tasks = new ArrayList<>();
     private ExecutorService executorService; // = Executors.newFixedThreadPool(threads);
     private List<Future<DivisorResult>> futures; // = executorService.invokeAll(tasks);
+    private List<Boolean> futureStatus = new ArrayList<>();
 
     /**
      * @param von
@@ -46,7 +47,7 @@ public class CalculateDivisor {
 	this.bis = bis;
 	this.threads = threads;
 	tasksInitialisieren();
-	this.executorService = Executors.newFixedThreadPool(threads);
+	executorService = Executors.newFixedThreadPool(threads);
 	try {
 	    futures = executorService.invokeAll(tasks);
 	} catch (InterruptedException e) {
@@ -64,7 +65,7 @@ public class CalculateDivisor {
 
 	for (int i = 0; i < threads; i++) {
 
-	    tasks.add(new PrimzahlTask(vonTeil, bisTeil));
+	    tasks.add(new PrimzahlTask(vonTeil, bisTeil, i+1));
 
 	    vonTeil = bisTeil + 1;
 	    bisTeil = vonTeil + grösseTeilZahlenfolge;
@@ -98,7 +99,7 @@ public class CalculateDivisor {
 	
 	
 	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
-	System.out.println("Ergebnis: " + cd.calculate());
+	System.out.println(cd.calculate());
 	
 //	TimeUnit.SECONDS.sleep(5);
 	cd.shutdown();
@@ -122,7 +123,7 @@ public class CalculateDivisor {
 
 	    for (int i = 0; i < this.futures.size(); i++) {
 
-		System.out.println(futures.get(i).isDone());
+		futureStatus.add(futures.get(i).isDone());
 		ergebnis.add(futures.get(i).get());
 	    }
 
@@ -134,9 +135,9 @@ public class CalculateDivisor {
 	    //
 	}
 
-	String primzahlenString = null;
+	String primzahlenString = "Ergebnis: " + "\n";
 	for (int i = 0; i < ergebnis.size(); i++) {
-	    primzahlenString += ergebnis.get(i).toString();
+	    primzahlenString += ergebnis.get(i).toString() + "\n";
 
 	}
 
@@ -152,12 +153,15 @@ public class CalculateDivisor {
 
 	private long von;
 	private long bis;
-	private DivisorResult resultat = new DivisorResult();
+	private int taskID;
+	private DivisorResult resultat;
 
-	public PrimzahlTask(long von, long bis) {
+	public PrimzahlTask(long von, long bis, int taskID) {
 
 	    this.von = von;
 	    this.bis = bis;
+	    this.taskID = taskID;
+	    this.resultat = new DivisorResult(taskID);
 	}
 
 	public DivisorResult call() {
@@ -193,10 +197,10 @@ public class CalculateDivisor {
 class DivisorResult {
     // das eigentlich ergebnis - die Ermittelten Primzahlen
     private final List<Long> primzahlenListe = new ArrayList<>();
+    private int taskID;
 
-
-    public DivisorResult() {
-
+    public DivisorResult(int taskID) {
+	this.taskID = taskID;
     }
 
     public List<Long> getPrimzahlen() {
@@ -214,7 +218,7 @@ class DivisorResult {
 
     @Override
     public String toString() {
-	return "Die Primzahlen lauten: " + primzahlenListe;
+	return "Die Primzahlen von Task " + taskID + " lauten: " + primzahlenListe;
     }
 
 }
