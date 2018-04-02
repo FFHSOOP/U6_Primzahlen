@@ -30,7 +30,7 @@ public class CalculateDivisor {
     private long bis;
     private int threads;
     private Collection<Callable<DivisorResult>> tasks = new ArrayList<>();
-    private ExecutorService executorService = Executors.newFixedThreadPool(threads);
+    private ExecutorService executorService; // = Executors.newFixedThreadPool(threads);
     private List<Future<DivisorResult>> futures; // = executorService.invokeAll(tasks);
 
     /**
@@ -46,6 +46,7 @@ public class CalculateDivisor {
 	this.bis = bis;
 	this.threads = threads;
 	tasksInitialisieren();
+	this.executorService = Executors.newFixedThreadPool(threads);
 	try {
 	    futures = executorService.invokeAll(tasks);
 	} catch (InterruptedException e) {
