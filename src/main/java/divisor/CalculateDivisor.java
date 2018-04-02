@@ -65,7 +65,7 @@ public class CalculateDivisor {
 
 	for (int i = 0; i < threads; i++) {
 
-	    tasks.add(new PrimzahlTask(vonTeil, bisTeil, i+1));
+	    tasks.add(new PrimzahlTask(vonTeil, bisTeil, i + 1));
 
 	    vonTeil = bisTeil + 1;
 	    bisTeil = vonTeil + grösseTeilZahlenfolge;
@@ -73,36 +73,6 @@ public class CalculateDivisor {
 		bisTeil = this.bis;
 	    }
 	}
-
-    }
-
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-	if (args.length != 3) {
-	    System.out.println("Usage: CalculateDivisor <intervalStart> <intervalEnd> <threadCount>");
-	    System.exit(1);
-	}
-	
-	
-	long von = Long.parseLong(args[0]);
-	long bis = Long.parseLong(args[1]);
-	int threads = Integer.parseInt(args[2]);
-
-	if (von > bis) {
-	    System.out.println("Die zweite Zahl muss groesser sein als die Erste");
-	    System.exit(1);
-	}
-	
-	if (von <= 0 || bis <= 0 || threads <= 0) {
-	    System.out.println("Die Zahlen muessen positiv sein");
-	    System.exit(1);
-	}
-	
-	
-	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
-	System.out.println(cd.calculate());
-	
-//	TimeUnit.SECONDS.sleep(5);
-	cd.shutdown();
 
     }
 
@@ -135,7 +105,7 @@ public class CalculateDivisor {
 	    //
 	}
 
-	String primzahlenString = "Ergebnis: Die Primzahlen im Intervall von " + von + " bis " + bis + " lauten"+ "\n";
+	String primzahlenString = "Ergebnis: Die Primzahlen im Intervall von " + von + " bis " + bis + " lauten" + "\n";
 	for (int i = 0; i < ergebnis.size(); i++) {
 	    primzahlenString += ergebnis.get(i).toString() + "\n";
 
@@ -147,6 +117,34 @@ public class CalculateDivisor {
     private void shutdown() {
 
 	executorService.shutdown();
+    }
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        if (args.length != 3) {
+            System.out.println("Usage: CalculateDivisor <intervalStart> <intervalEnd> <threadCount>");
+            System.exit(1);
+        }
+    
+        long von = Long.parseLong(args[0]);
+        long bis = Long.parseLong(args[1]);
+        int threads = Integer.parseInt(args[2]);
+    
+        if (von > bis) {
+            System.out.println("Die zweite Zahl muss groesser sein als die Erste");
+            System.exit(1);
+        }
+    
+        if (von <= 0 || bis <= 0 || threads <= 0) {
+            System.out.println("Die Zahlen muessen positiv sein");
+            System.exit(1);
+        }
+    
+        CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
+        System.out.println(cd.calculate());
+    
+        // TimeUnit.SECONDS.sleep(5);
+        cd.shutdown();
+    
     }
 
     public final class PrimzahlTask implements Callable<DivisorResult> {
