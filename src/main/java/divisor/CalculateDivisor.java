@@ -14,11 +14,11 @@ import org.apache.commons.collections.list.SynchronizedList;
 
 /**
  * Das folgende Programm soll aus einem vorgegebene Interval von Long-Zahlen die
- * Primzahlen zurückgeben.
+ * Primzahlen zurï¿½ckgeben.
  * 
  * Die Berechnung soll in n Threads stattfinden, die via Executor Framework
  * gesteuert werden, und sich das Problem aufteilen - jeder Thread soll eine
- * Teilmenge des Problems lösen. Verwenden Sie bitte einen FixedThreadPool und
+ * Teilmenge des Problems loesen. Verwenden Sie bitte einen FixedThreadPool und
  * implementieren Sie die Worker als Callable.
  * 
  * @author Stefan Nyffenegger
@@ -49,7 +49,7 @@ public class CalculateDivisor {
 	executorService = Executors.newFixedThreadPool(threads);
 	try {
 	    futures = executorService.invokeAll(tasks); // Der executorService bekommt ein Tasks-Array, wird gestartet
-	    						// und gibt ein Future-Array zurück
+	    						// und gibt ein Future-Array zurï¿½ck
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
@@ -58,21 +58,21 @@ public class CalculateDivisor {
 
     /**
      * Das zu untersuchende Intervall wird aufgeteilt und auf mehrere Tasks verteilt
-     * Die einzelnen Tasks werden in die task collection eingefügt
+     * Die einzelnen Tasks werden in die task collection eingefï¿½gt
      */
     private void tasksInitialisieren() {
 
-	long grösseZahlenfolge = bis - von;
-	long grösseTeilZahlenfolge = grösseZahlenfolge / anzThreads;
+	long groesseZahlenfolge = bis - von;
+	long groesseTeilZahlenfolge = groesseZahlenfolge / anzThreads;
 	long vonTeil = von; // Anfang von einzelnem Task zu untersuchender Teil
-	long bisTeil = vonTeil + grösseTeilZahlenfolge; // Ende von einzelnem Task zu untersuchender Teil
+	long bisTeil = vonTeil + groesseTeilZahlenfolge; // Ende von einzelnem Task zu untersuchender Teil
 
 	for (int i = 0; i < anzThreads; i++) {
 
 	    tasks.add(new PrimzahlTask(vonTeil, bisTeil, i + 1));
 
 	    vonTeil = bisTeil + 1;
-	    bisTeil = vonTeil + grösseTeilZahlenfolge;
+	    bisTeil = vonTeil + groesseTeilZahlenfolge;
 	    //Korrektur, falls die Intervallgrenze ueberschritten wird
 	    if (bisTeil > this.bis) {
 		bisTeil = this.bis;
@@ -112,7 +112,7 @@ public class CalculateDivisor {
 
 	String primzahlenString = "Ergebnis: Die Primzahlen im Intervall von " + von + " bis " + bis + " lauten" + "\n";
 	
-	// Fügt die Ergebnisse der einzelnen DivisorResult-Objekte in den primzahlenString ein 
+	// Fï¿½gt die Ergebnisse der einzelnen DivisorResult-Objekte in den primzahlenString ein 
 	for (int i = 0; i < ergebnis.size(); i++) {
 	    primzahlenString += ergebnis.get(i).toString() + "\n";
 
@@ -158,7 +158,7 @@ public class CalculateDivisor {
     }
 
     /**
-     * Es werden die einzelnen Tasks für die berechnung definiert
+     * Es werden die einzelnen Tasks fï¿½r die berechnung definiert
      * 
      * @author Stefan Nyffenegger
      * @author Benjamin Steffen
@@ -188,11 +188,12 @@ public class CalculateDivisor {
 
 	/**
 	 * Hier findet die eigenliche Primzahlberechnung statt
-	 * Für jede Zahl im Intervall wird untersucht, ob sie eine Primzahl ist
-	 * Die entsprechenden Primzahlen werden dem DivisorResult-Objekt hinzugefügt
+	 * Fï¿½r jede Zahl im Intervall wird untersucht, ob sie eine Primzahl ist
+	 * Die entsprechenden Primzahlen werden dem DivisorResult-Objekt hinzugefï¿½gt
 	 * 
-	 * @return Gibt ein DivisorResult-Objekt mit den gefundenen Primzahlen zurück
+	 * @return Gibt ein DivisorResult-Objekt mit den gefundenen Primzahlen zurï¿½ck
 	 */
+        @Override
 	public DivisorResult call() throws Exception {
 	    int anzTeiler; //wieviele Teiler hat die untersuchte Zahl
 	    for (long zahl = von; zahl <= bis; zahl++) {
@@ -206,7 +207,7 @@ public class CalculateDivisor {
 		    }
 		}
 		if (anzTeiler == 2) {
-		    resultat.primzahlHinzufügen(zahl); // es ist eine Primzahl
+		    resultat.primzahlHinzufuegen(zahl); // es ist eine Primzahl
 		}
 	    }
 
@@ -217,7 +218,7 @@ public class CalculateDivisor {
 }
 
 /**
- * Die Klasse hält das Ergebnis einer Primzahl-Berechnung
+ * Die Klasse hï¿½lt das Ergebnis einer Primzahl-Berechnung
  * 
  * @author Stefan Nyffenegger
  * @author Benjamin Steffen
@@ -238,7 +239,7 @@ class DivisorResult {
     }
 
     /**
-     * @return Gibt die Liste mit den Primzahlen zurück
+     * @return Gibt die Liste mit den Primzahlen zurï¿½ck
      */
     public List<Long> getPrimzahlen() {
 
@@ -248,7 +249,7 @@ class DivisorResult {
     /**
      * @param primzahl Eine identifizierte Primzahl
      */
-    public void primzahlHinzufügen(long primzahl) {
+    public void primzahlHinzufuegen(long primzahl) {
 
 	synchronized (primzahlenListe) {
 	    primzahlenListe.add(primzahl);
