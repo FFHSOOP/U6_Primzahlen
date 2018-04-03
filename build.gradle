@@ -13,6 +13,17 @@
 	apply plugin: 'java'
 	apply plugin: 'application'
 	mainClassName = 'CalculateDivisor'
+	
+
+run{
+		
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'divisor.CalculateDivisor'
+
+  // arguments to pass to the application
+  args = ["1", "100", "4"]
+
+}
 
 // In this section you declare where to find the dependencies of your project
 

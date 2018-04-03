@@ -22,6 +22,10 @@ public class CalculateDivisorTest extends TestCase {
 //    }
 
     
+    
+    //möglich von bis intervalle der einzelnen tasks untersuchen
+    //möglich Primzahlen von 1 bis 50 mit ausgegebenen Zahlen vergleichen
+    //futureStatus testen ob alle Tasks ihre arbeit erledigt haben
     @Test
     public void testPrimzahlTask() {
 	
