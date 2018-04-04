@@ -101,7 +101,7 @@ public class CalculateDivisor {
 
 		futureStatus.add(futures.get(i).isDone());
 		ergebnisListe.add(futures.get(i).get()); // Gibt jeweils ein DivisorResult-Objekt zurueck und fuegt
-	    } // es ins Array ein
+	    } 						// es ins Array ein
 
 	}
 
@@ -140,7 +140,7 @@ public class CalculateDivisor {
     /**
      * Beendet den ThreadPool
      */
-    private void shutdown() {
+    public void shutdown() {
 
 	executorService.shutdown();
     }

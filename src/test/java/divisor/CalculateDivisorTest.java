@@ -38,6 +38,7 @@ public class CalculateDivisorTest extends TestCase {
 	} catch (ExecutionException e) {
 	    e.printStackTrace();
 	}
+	cd.shutdown();
     }
 
     
@@ -64,15 +65,4 @@ public class CalculateDivisorTest extends TestCase {
 	}
 	assertTrue(fehler == 0);
     }
-
-    /**
-     * Es wird geprüft ob der Tasks vom Threadpool fertig berechnet wurde
-     */
-    @Test
-    public void testBerechnungsstatus() {
-
-	assertTrue(cd.getFutureStatus().get(0));
-
-    }
-
 }
