@@ -36,7 +36,7 @@ public class DivisorResult {
      * @param primzahl
      *            Eine identifizierte Primzahl
      */
-    public void primzahlHinzufügen(long primzahl) {
+    public void primzahlHinzufuegen(long primzahl) {
 
 	synchronized (primzahlenListe) {
 	    primzahlenListe.add(primzahl);
