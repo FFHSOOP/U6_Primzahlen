@@ -1,6 +1,8 @@
 package divisor;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import student.TestCase;
@@ -29,6 +31,13 @@ public class CalculateDivisorTest extends TestCase {
 	bis = 100;
 	anzThreads = 1;
 	cd = new CalculateDivisor(von, bis, anzThreads);
+	try {
+	    cd.calculate();
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
+	} catch (ExecutionException e) {
+	    e.printStackTrace();
+	}
     }
 
     /**
@@ -36,7 +45,6 @@ public class CalculateDivisorTest extends TestCase {
      * 100 mit den in diesem Intervall bekannten Primzahlen übereinstimmen.
      */
     @Test
-//  @Ignore
     public void testPrimzahlTask(){
 	
 	DivisorResult resultat = cd.getErgebnisListe().get(0);
@@ -59,8 +67,7 @@ public class CalculateDivisorTest extends TestCase {
     /**
      * Es wird geprüft ob der Tasks vom Threadpool fertig berechnet wurde
      */
-// @Test
-    @Ignore
+    @Test
     public void testBerechnungsstatus() {
 
 	assertTrue(cd.getFutureStatus().get(0));
