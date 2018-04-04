@@ -40,6 +40,7 @@ public class CalculateDivisorTest extends TestCase {
 	}
     }
 
+    
     /**
      * Es wird geprüft ob die berechneten Primzahlen in einem Intervall von 1 bis
      * 100 mit den in diesem Intervall bekannten Primzahlen übereinstimmen.
