@@ -35,11 +35,13 @@ public class CalculateDivisor {
     private ExecutorService executorService;
     private List<Future<DivisorResult>> futures;
     private List<Boolean> futureStatus = new ArrayList<>();
+    private List<DivisorResult> ergebnisListe = new ArrayList<>();
 
     /**
      * @param von untere Intervallgrenze
      * @param bis obere Intervallgrenze
-     * @param threadCount  Anzahl der Threads, auf die das Problem aufgeteilt werden soll
+     * @param threadCount Anzahl der Threads, auf die das Problem aufgeteilt werden soll
+     *            
      */
     public CalculateDivisor(long von, long bis, int threads) {
 	this.von = von;
@@ -49,7 +51,7 @@ public class CalculateDivisor {
 	executorService = Executors.newFixedThreadPool(threads);
 	try {
 	    futures = executorService.invokeAll(tasks); // Der executorService bekommt ein Tasks-Array, wird gestartet
-	    						// und gibt ein Future-Array zurück
+							// und gibt ein Future-Array zurück
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
@@ -73,7 +75,7 @@ public class CalculateDivisor {
 
 	    vonTeil = bisTeil + 1;
 	    bisTeil = vonTeil + grösseTeilZahlenfolge;
-	    //Korrektur, falls die Intervallgrenze ueberschritten wird
+	    // Korrektur, falls die Intervallgrenze ueberschritten wird
 	    if (bisTeil > this.bis) {
 		bisTeil = this.bis;
 	    }
@@ -81,44 +83,57 @@ public class CalculateDivisor {
     }
 
     /**
-     * Es werden die Berechnungsergebnisse ausgelesen, zusammengestellt und zurueckgegeben
+     * Es werden die Berechnungsergebnisse ausgelesen, zusammengestellt und
+     * zurueckgegeben
      * 
-     * @return Gibt den Ergebnis-String zurueck, der nachher auf der Konsole ausgegeben wird
+     * @return Gibt den Ergebnis-String zurueck, der nachher auf der Konsole
+     *         ausgegeben wird
      * @throws InterruptedException
      * @throws ExecutionException
      */
 
     private String calculate() throws InterruptedException, ExecutionException {
 
-
-	ArrayList<DivisorResult> ergebnis = new ArrayList<>();
-
 	try {
 
 	    for (int i = 0; i < this.futures.size(); i++) {
 
 		futureStatus.add(futures.get(i).isDone());
-		ergebnis.add(futures.get(i).get()); 	// Gibt jeweils ein DivisorResult-Objekt zurueck und fuegt
-	    }						// es ins Array ein
+		ergebnisListe.add(futures.get(i).get()); // Gibt jeweils ein DivisorResult-Objekt zurueck und fuegt
+	    } // es ins Array ein
 
 	}
 
 	catch (InterruptedException e) {
 	    e.printStackTrace();
-	}
-	catch (ExecutionException e) {
+	} catch (ExecutionException e) {
 	    e.printStackTrace();
 	}
 
 	String primzahlenString = "Ergebnis: Die Primzahlen im Intervall von " + von + " bis " + bis + " lauten" + "\n";
-	
-	// Fügt die Ergebnisse der einzelnen DivisorResult-Objekte in den primzahlenString ein 
-	for (int i = 0; i < ergebnis.size(); i++) {
-	    primzahlenString += ergebnis.get(i).toString() + "\n";
+
+	// Fügt die Ergebnisse der einzelnen DivisorResult-Objekte in den
+	// primzahlenString ein
+	for (int i = 0; i < ergebnisListe.size(); i++) {
+	    primzahlenString += ergebnisListe.get(i).toString() + "\n";
 
 	}
 
 	return primzahlenString;
+    }
+
+    /**
+     * @return gibt die Liste mit dem Berechnungsstatus zurück
+     */
+    public List<Boolean> getFutureStatus() {
+	return futureStatus;
+    }
+
+    /**
+     * @return gibt die Ergebnisliste zurueck
+     */
+    public List<DivisorResult> getErgebnisListe() {
+	return ergebnisListe;
     }
 
     /**
@@ -150,7 +165,7 @@ public class CalculateDivisor {
 	}
 
 	CalculateDivisor cd = new CalculateDivisor(von, bis, threads);
-	//Ergebnisausgabe auf Konsole
+	// Ergebnisausgabe auf Konsole
 	System.out.println(cd.calculate());
 
 	cd.shutdown();
@@ -187,14 +202,14 @@ public class CalculateDivisor {
 	}
 
 	/**
-	 * Hier findet die eigenliche Primzahlberechnung statt
-	 * Für jede Zahl im Intervall wird untersucht, ob sie eine Primzahl ist
-	 * Die entsprechenden Primzahlen werden dem DivisorResult-Objekt hinzugefügt
+	 * Hier findet die eigenliche Primzahlberechnung statt Für jede Zahl im
+	 * Intervall wird untersucht, ob sie eine Primzahl ist Die entsprechenden
+	 * Primzahlen werden dem DivisorResult-Objekt hinzugefügt
 	 * 
 	 * @return Gibt ein DivisorResult-Objekt mit den gefundenen Primzahlen zurück
 	 */
 	public DivisorResult call() throws Exception {
-	    int anzTeiler; //wieviele Teiler hat die untersuchte Zahl
+	    int anzTeiler; // wieviele Teiler hat die untersuchte Zahl
 	    for (long zahl = von; zahl <= bis; zahl++) {
 		anzTeiler = 0;
 		for (long divisor = 1; divisor <= zahl; divisor++) {
@@ -226,12 +241,12 @@ public class CalculateDivisor {
  */
 class DivisorResult {
 
-    
     private final List<Long> primzahlenListe = new ArrayList<>(); // die Liste mit den gefundenen Primzahlen
     private int taskID;
 
     /**
-     * @param taskID Die ID des Tasks, welcher die Ergebnisse liefert
+     * @param taskID
+     *            Die ID des Tasks, welcher die Ergebnisse liefert
      */
     public DivisorResult(int taskID) {
 	this.taskID = taskID;
@@ -246,7 +261,8 @@ class DivisorResult {
     }
 
     /**
-     * @param primzahl Eine identifizierte Primzahl
+     * @param primzahl
+     *            Eine identifizierte Primzahl
      */
     public void primzahlHinzufügen(long primzahl) {
 
